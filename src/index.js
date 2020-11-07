@@ -182,7 +182,7 @@ const ReactGiphySearchBox = ({
 };
 
 ReactGiphySearchBox.defaultProps = {
-  gifListHeight: "500px",
+  gifListHeight: "400px",
   gifPerPage: 150,
   imageBackgroundColor: "#eee",
   library: "gifs",

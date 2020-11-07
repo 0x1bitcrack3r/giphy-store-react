@@ -18,8 +18,8 @@ const Wrapper = styled("div")`
   }
   border-radius: 0.3rem;
   display: inline-block;
-  padding: 5rem;
-  margin-left: 4rem;
+  padding: 3rem;
+  margin-left: 2rem;
   box-shadow: 0 0.3rem 1rem rgba(8, 38, 78, 0.2);
   align-items: center;
   margin-bottom: 1.5rem;
@@ -36,8 +36,8 @@ const Demo = () => (
             onSelect={(item) => console.log(item)}
             searchFormClassName={styles.searchSearchForm}
             masonryConfig={[
-              { columns: 10, imageWidth: 110, gutter: 5 },
-              { mq: "100vh", columns: 10, imageWidth: 110, gutter: 5 },
+              { columns: 9, imageWidth: 110, gutter: 5 },
+              { mq: "100vh", columns: 9, imageWidth: 110, gutter: 5 },
             ]}
           />
         </Wrapper>

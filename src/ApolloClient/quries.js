@@ -10,6 +10,11 @@ export const TRENDING_GIFS = gql`
             width
             height
           }
+         downsized_still{
+            url
+            width
+            height
+        }
         }
         title
       }

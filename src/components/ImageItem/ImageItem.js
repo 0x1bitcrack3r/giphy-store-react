@@ -1,6 +1,7 @@
 // @flow
-import React from 'react'
+import React, {useState} from 'react'
 import styles from './ImageItem.module.css'
+import GifPlayer from 'react-gif-player'
 
 type Props = {
   backgroundColor: string,
@@ -16,7 +17,9 @@ const ImageItem = ({
   size,
   listItemClassName,
   onSelect,
-}: Props) => (
+}: Props) =>{ 
+const [open,setOpen] = useState(false)
+  return(
   <button
     data-testid="ImageItemButton"
     type="button"
@@ -29,17 +32,19 @@ const ImageItem = ({
       height: `${(item.images.fixed_width_downsampled.height * size) /
         item.images.fixed_width_downsampled.width}px`,
     }}
-    onClick={() => onSelect(item)}
+    onClick = { () => setOpen(!open)}
   >
+
     <img
       data-testid="ImageItemImage"
       width={item.images.fixed_width_downsampled.width}
       height={item.images.fixed_width_downsampled.height}
       alt={item.title}
-      src={item.images.fixed_width_downsampled.url}
+      src = {open? item.images.fixed_width_downsampled.url: item.images.downsized_still.url
+}
       className={styles.image}
     />
   </button>
-)
+)}
 
 export default ImageItem
