@@ -52,6 +52,11 @@ export const SEARCH_GIF_BY_QUERY = gql`
             width
             height
           }
+          downsized_still{
+            url
+            width
+            height
+        }
         }
         title
       }
