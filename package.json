@@ -1,5 +1,5 @@
 {
-  "name": "Giphy Store",
+  "name": "giphy-store-react",
   "version": "1.4.0",
   "description": "Search for Gifs",
   "main": "lib/index.js",
