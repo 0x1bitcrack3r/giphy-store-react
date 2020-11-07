@@ -1,0 +1,203 @@
+// @flow
+import React, { useEffect, useRef, useState } from "react";
+import InfiniteScroll from "react-infinite-scroller";
+import styles from "./index.module.css";
+import SearchForm from "./components/SearchForm/SearchForm";
+import ImageItem from "./components/ImageItem/ImageItem";
+import MasonryLayout from "./components/MasonryLayout/MasonryLayout";
+import Alert from "./components/Alert/Alert";
+import Spinner from "./components/Spinner/Spinner";
+import useSearchForm from "./hooks/useSearchForm";
+import useDebounce from "./hooks/useDebounce";
+import useMedia from "./hooks/useMedia";
+import useApi from "./hooks/useApi";
+import assetsSpinner from "./assets/spinner.svg";
+import {
+  getComponentWrapperWidth,
+  getDefaultMasonryConfig,
+  getMasonryConfigExceptLast,
+  getMediaBreakpoints,
+} from "./utils/masonry";
+import { useTheme } from "../demo/src/ThemeContext";
+import DarkModeToggle from "react-dark-mode-toggle";
+
+type MasonryConfig = {
+  mq?: string,
+  columns: number,
+  imageWidth: number,
+  gutter: number,
+};
+
+type Props = {
+  apiKey: string,
+  gifListHeight: string,
+  gifPerPage: number,
+  imageBackgroundColor: string,
+  library: "gifs" | "stickers",
+  listItemClassName: string,
+  listWrapperClassName: string,
+  loadingImage: string,
+  masonryConfig: Array<MasonryConfig>,
+  messageError: string,
+  messageLoading: string,
+  messageNoMatches: string,
+  onSearch: Function,
+  onSelect: Function,
+  rating: string,
+  searchFormClassName: string,
+  searchPlaceholder: string,
+  wrapperClassName: string,
+};
+
+const ReactGiphySearchBox = ({
+  apiKey,
+  gifListHeight,
+  gifPerPage,
+  imageBackgroundColor,
+  library,
+  listItemClassName,
+  listWrapperClassName,
+  loadingImage,
+  masonryConfig,
+  messageError,
+  messageLoading,
+  messageNoMatches,
+  onSearch,
+  onSelect,
+  rating,
+  searchFormClassName,
+  searchPlaceholder,
+  wrapperClassName,
+}: Props) => {
+  const { query, handleInputChange, handleSubmit } = useSearchForm();
+  const debouncedQuery = useDebounce(query, 500);
+  const themeState = useTheme();
+  const [isDarkMode, setIsDarkMode] = useState(() => false);
+
+  const apiEndpoint = query ? "search" : "trending";
+  const apiUrl = (offset) =>
+    `https://api.giphy.com/v1/${library}/${apiEndpoint}?api_key=${apiKey}&limit=${gifPerPage}&rating=${rating}&offset=${offset}&q=${query}`;
+
+  const [{ data, loading, error, lastPage }, fetchImages] = useApi();
+
+  const masonryConfigMatchMedia = useMedia(
+    getMediaBreakpoints(masonryConfig),
+    getMasonryConfigExceptLast(masonryConfig),
+    getDefaultMasonryConfig(masonryConfig)
+  );
+
+  // Fetch Giphy Api on component mount and on search query change
+  const [firstRun, setFirstRun] = useState(true);
+  const isFirstRun = useRef(true);
+  useEffect(() => {
+    fetchImages(0, false, query);
+    onSearch(query);
+
+    if (isFirstRun.current) {
+      isFirstRun.current = false;
+      setFirstRun(false);
+    }
+  }, [debouncedQuery]);
+
+  return (
+    <div>
+      <DarkModeToggle
+        onChange={() => {
+          themeState.toggle(), setIsDarkMode(!isDarkMode);
+        }}
+        checked={isDarkMode}
+        size={80}
+      />
+      <div
+        className={`${styles.componentWrapper}${
+          wrapperClassName ? ` ${wrapperClassName}` : ""
+        }`}
+        style={{ width: getComponentWrapperWidth(masonryConfigMatchMedia) }}
+      >
+        <SearchForm
+          value={query}
+          setValue={handleInputChange}
+          onSubmit={handleSubmit}
+          loadingData={loading}
+          searchFormClassName={searchFormClassName}
+          placeholder={searchPlaceholder}
+        />
+
+        <div
+          className={`${styles.listWrapper}${
+            listWrapperClassName ? ` ${listWrapperClassName}` : ""
+          }`}
+          style={{ height: gifListHeight }}
+        >
+          <Alert
+            show={data.length === 0 && !loading && !error && !firstRun}
+            message={messageNoMatches}
+          />
+
+          <Alert show={error} message={messageError} />
+
+          <Spinner
+            show={loading}
+            message={messageLoading}
+            image={loadingImage}
+          />
+
+          <InfiniteScroll
+            pageStart={0}
+            loadMore={(page) => fetchImages(page * gifPerPage, true, query)}
+            hasMore={!loading && !lastPage}
+            useWindow={false}
+            initialLoad={false}
+            loader={
+              !firstRun && (
+                <div key="loading">
+                  <Spinner
+                    show={loading}
+                    message={messageLoading}
+                    image={loadingImage}
+                  />
+                </div>
+              )
+            }
+          >
+            {data.length > 0 && (
+              <MasonryLayout sizes={masonryConfig}>
+                {data.map((item) => (
+                  <ImageItem
+                    item={item}
+                    size={masonryConfigMatchMedia.imageWidth}
+                    key={item.id}
+                    listItemClassName={listItemClassName}
+                    onSelect={onSelect}
+                    backgroundColor={imageBackgroundColor}
+                  />
+                ))}
+              </MasonryLayout>
+            )}
+          </InfiniteScroll>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+ReactGiphySearchBox.defaultProps = {
+  gifListHeight: "500px",
+  gifPerPage: 150,
+  imageBackgroundColor: "#eee",
+  library: "gifs",
+  listItemClassName: "",
+  listWrapperClassName: "",
+  loadingImage: assetsSpinner,
+  masonryConfig: [{ columns: 2, imageWidth: 120, gutter: 5 }],
+  messageError: "Oops! Something went wrong. Please, try again.",
+  messageLoading: "Loading...",
+  messageNoMatches: "No matches found.",
+  onSearch: () => {},
+  rating: "g",
+  searchFormClassName: "",
+  wrapperClassName: "",
+  searchPlaceholder: "Search for GIFs",
+};
+
+export default ReactGiphySearchBox;

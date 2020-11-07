@@ -1,0 +1,41 @@
+{
+  "name": "Giphy Store",
+  "version": "1.4.0",
+  "description": "Search for Gifs",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "files": [
+    "css",
+    "es",
+    "lib",
+    "umd"
+  ],
+  "scripts": {
+    "start": "nwb serve-react-demo"
+  },
+  "dependencies": {
+    "@emotion/core": "^10.1.1",
+    "@emotion/styled": "^10.0.27",
+    "apollo-boost": "^0.4.9",
+    "apollo-cache-inmemory": "^1.6.6",
+    "bricks.js": "^1.8.0",
+    "emotion-theming": "^10.0.27",
+    "graphql": "^15.4.0",
+    "graphql-tag": "^2.11.0",
+    "react-apollo": "^3.1.5",
+    "react-apollo-hooks": "^0.5.0",
+    "react-dark-mode-toggle": "0.0.10",
+    "react-infinite-scroller": "^1.2.4"
+  },
+  "peerDependencies": {
+    "react": "16.x"
+  },
+  "devDependencies": {
+    "nwb": "0.23.x",
+    "prettier": "^1.18.2",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
+  },
+  "author": "0x1bitcrack3r",
+  "license": "MIT"
+}

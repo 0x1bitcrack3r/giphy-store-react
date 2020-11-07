@@ -1,0 +1,24 @@
+{
+  "name": "giphygraphql",
+  "version": "1.0.0",
+  "description": "graphql layer",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon -r esm src/server.js",
+    "test": "jest"
+  },
+  "author": "0x1bitcrack3r",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-datasource-rest": "0.3.2",
+    "apollo-server": "2.6.1",
+    "dotenv": "7.0.0",
+    "graphql": "0.13.2",
+    "lodash.merge": "4.6.2"
+  },
+  "devDependencies": {
+    "esm": "^3.2.22",
+    "jest": "^24.7.1",
+    "nodemon": "^1.18.10"
+  }
+}
