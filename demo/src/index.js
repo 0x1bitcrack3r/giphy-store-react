@@ -31,8 +31,6 @@ const Demo = () => (
       <ThemeProvider>
         <Wrapper>
           <ReactGiphySearchBox
-            apiKey="9Ixlv3DWC1biJRI57RanyL7RTbfzz0o7"
-            // eslint-disable-next-line no-console
             onSelect={(item) => console.log(item)}
             searchFormClassName={styles.searchSearchForm}
             masonryConfig={[
